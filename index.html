@@ -1,776 +1,153 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bilgisayar Temelleri Soruları</title>
-  <style>
-    :root{
-      --card-bg:#fff;
-      --card-border:#ddd;
-      --accent:#0b63d6;
-      --correct:#1f7a1f;
-      --wrong:#c0392b;
-      --muted:#666;
-    }
-    body{
-      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-      background:#f4f6f8;
-      color:#111;
-      margin:20px;
-      line-height:1.4;
-    }
-    header{
-      text-align:center;
-      margin-bottom:18px;
-    }
-    h1{ margin:6px 0; font-size:22px; }
-    .container{ max-width:940px; margin:0 auto; }
-    .card{
-      background:var(--card-bg);
-      border:1px solid var(--card-border);
-      border-radius:10px;
-      padding:14px;
-      margin-bottom:12px;
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      box-shadow:0 1px 2px rgba(0,0,0,0.03);
-    }
-    .q-left{
-      width:64px;
-      flex:0 0 64px;
-      text-align:center;
-      font-weight:700;
-      color:var(--muted);
-      font-size:18px;
-      padding-top:6px;
-    }
-    .q-body{
-      flex:1 1 auto;
-    }
-    .qtext{
-      margin:0 0 8px 0;
-      font-weight:600;
-    }
-    .options{ list-style:none; padding:0; margin:0; display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-    .options li{
-      background:#fafafa;
-      border:1px solid #eee;
-      padding:8px;
-      border-radius:6px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      min-height:44px;
-      box-sizing:border-box;
-    }
-    .options input[type="radio"]{ transform:scale(1.05); }
-    .feedback{
-      margin-top:8px;
-      min-height:24px; /* rezerv alan, layout kaymasını önler */
-      font-weight:700;
-    }
-    .feedback .correct{ color:var(--correct); }
-    .feedback .wrong{ color:var(--wrong); }
-    /* sabit resim kutusu örneği (kullanmak isterseniz) */
-    .img-box{
-      width:120px;
-      height:80px;
-      background:#eef2f7;
-      border-radius:6px;
-      flex:0 0 120px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#99a3b0;
-      font-size:12px;
-    }
-    footer{
-      text-align:center;
-      margin-top:18px;
-      color:var(--muted);
-      font-size:14px;
-    }
-    @media (max-width:720px){
-      .options{ grid-template-columns:1fr; }
-      .q-left{ display:none; }
-      .img-box{ display:none; }
-    }
-    button#reset{
-      background:var(--accent);
-      color:white;
-      border:none;
-      padding:10px 14px;
-      border-radius:8px;
-      cursor:pointer;
-      font-weight:700;
-      margin-top:8px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>BİT Testi - 80 Soru | Arda Ayaydın</title>
+<style>
+body{font-family:Arial;background:#f2f2f2;padding:20px}
+.question{background:#fff;padding:15px;margin-bottom:15px;border-radius:8px}
+button{display:block;margin:5px 0;padding:8px;width:100%;cursor:pointer}
+.result{font-weight:bold;margin-top:5px}
+.correct{color:green}
+.wrong{color:red}
+#finish{font-size:22px;font-weight:bold;background:#dff0d8;padding:15px;border-radius:10px;display:none}
+</style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>BİLGİSAYAR TEMELLERİ — ARDA AYAYDIN</h1>
-    </header>
 
-    <!-- Sorular başlıyor -->
-    <!-- Her .card elementi içinde data-correct-value ve data-correct-text bulunur -->
-    
-    <!-- 1 -->
-    <div class="card" data-correct="a" data-correct-text="Abacus (abaküs)">
-      <div class="q-left">1</div>
-      <div class="q-body">
-        <div class="qtext">İlk hesaplama araçlarından biri hangisidir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q1" value="a"> a) Abacus (abaküs)</label></li>
-          <li><label><input type="radio" name="q1" value="b"> b) Mikroişlemci</label></li>
-          <li><label><input type="radio" name="q1" value="c"> c) ENIAC</label></li>
-          <li><label><input type="radio" name="q1" value="d"> d) SSD</label></li>
-        </ul>
-        <div class="feedback" aria-live="polite"></div>
-      </div>
-    </div>
+<h2>BİT Genel Tekrar Testi (80 Soru) – Arda Ayaydın</h2>
+<div id="test"></div>
+<div id="finish"></div>
 
-    <!-- 2 -->
-    <div class="card" data-correct="c" data-correct-text="Verileri işleyen elektronik cihaz">
-      <div class="q-left">2</div>
-      <div class="q-body">
-        <div class="qtext">Bilgisayar nedir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q2" value="a"> a) Sadece depolama aygıtı</label></li>
-          <li><label><input type="radio" name="q2" value="b"> b) Yalnızca yazıcı</label></li>
-          <li><label><input type="radio" name="q2" value="c"> c) Verileri işleyen elektronik cihaz</label></li>
-          <li><label><input type="radio" name="q2" value="d"> d) Klavye türü</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
+<script>
+const questions = [
+{q:"1) Ekran ayarlarken yanlış olan?",a:["A) Çözünürlük uygun","B) Işık dengeli","C) Işık ekrana dik gelmeli","D) Mesafe 50-60 cm"],c:2},
+{q:"2) Kablo güvenliğinde yanlış?",a:["A) Topraklı priz olmamalı","B) Kaliteli uzatma","C) Ezilmemeli","D) Oynanmamalı"],c:0},
+{q:"3) Programlara ne denir?",a:["A) BT","B) Teknoloji","C) Yazılım","D) Donanım"],c:2},
+{q:"4) Bilgisayar kullanımında yanlış?",a:["A) Ortam çok aydınlık","B) Klavye-fare aynı","C) Molalar","D) Kaymayan koltuk"],c:0},
+{q:"5) Görüntülü görüşme donanımı?",a:["A) Hoparlör","B) Monitör","C) Webcam","D) Mikrofon"],c:2},
+{q:"6) İmleci hareket ettiren?",a:["A) Yazıcı","B) Klavye","C) Fare","D) CPU"],c:2},
+{q:"7) USB depolama?",a:["A) Flash Disk","B) Anakart","C) Disket","D) Harddisk"],c:0},
+{q:"8) En güçlü bilgisayar?",a:["A) Mini","B) Server","C) Laptop","D) Network"],c:1},
+{q:"9) Kağıda aktaran?",a:["A) Modem","B) Tarayıcı","C) Klavye","D) Yazıcı"],c:3},
+{q:"10) Yazı yazma birimi?",a:["A) Yazıcı","B) Fare","C) Klavye","D) Barkod"],c:2},
+{q:"11) Elektronik cihaz tanımı?",a:["A) Bilgisayar","B) Teknoloji","C) Makine","D) Yazılım"],c:0},
+{q:"12) Bilgisayarın beyni?",a:["A) CPU","B) Anakart","C) RAM","D) Kasa"],c:0},
+{q:"13) Kalıcı depolama?",a:["A) RAM","B) Harddisk","C) Anakart","D) CPU"],c:1},
+{q:"14) Fiziki parçalar?",a:["A) Yazılım","B) Bilişim","C) Donanım","D) Parça"],c:2},
+{q:"15) Ses çıkışı?",a:["A) Yazıcı","B) Mikrofon","C) Hoparlör","D) Monitör"],c:2},
+{q:"16) Önemsiz olan?",a:["A) Klavye","B) Ekran","C) Koltuk","D) CPU hızı"],c:3},
+{q:"17) Görüntü birimi?",a:["A) Yazıcı","B) Anakart","C) Monitör","D) Optik"],c:2},
+{q:"18) Aşağıdaki seçeneklerden hangisi bilgi ve iletişim teknolojileri araçlarının yararları arasında yer almaz?",a:["A) Hızlı iletişim","B) İş yükü artar","C) Kolaylık","D) Bilgiye erişim"],c:1},
+{q:"19) Koltuk özelliği değil?",a:["A) Sırt desteği","B) Dönmez","C) Yükseklik","D) Bel desteği"],c:1},
+{q:"20) İnternetten satış?",a:["A) Otomasyon","B) Toplum","C) Ticaret","D) E-Ticaret"],c:3},
+{q:"21) Aşağıdakilerden hangisi bilgisayarlar arasındaki farklılıkların nedenlerinden biri değildir?",a:["A) Kapasite","B) Hız","C) Güvenlik","D) Maliyet"],c:2},
+{q:"22) Yazılım nedir?",a:["A) Program","B) Donanım","C) RAM","D) ROM"],c:0},
+{q:"23) Temel mantık?",a:["A) Veri-İşlem-Bilgi","B) RAM-ROM","C) Klavye-Ekran","D) Bilgi-İşlem-Veri"],c:0},
+{q:"24) Doğru ifade?",a:["A) 1KB=8bit","B) 1024MB=1KB","C) 1KB=1024Byte","D) 1GB=1024KB"],c:2},
+{q:"25) Depolama değil?",a:["A) Harddisk","B) RAM","C) ROM","D) Anakart"],c:3},
+{q:"26) ………….. bilgisayardaki tüm donanım elemanları arasındaki iletişimi sağlar, bazı donanım elemanları ……………… üzerinde yer alır; bazı donanım elemanları ise ……………. kablolarla bağlıdır.",a:["A) RAM","B) Anakart","C) Harddisk","D) CPU"],c:1},
+{q:"27) RAM için yanlış?",a:["A) Geçici","B) Programlar","C) Elektrik kesilince silinir","D) Yardımcı bellek"],c:3},
+{q:"28) Aşağıdakilerden hangisi uygulama yazılımlarına bir örnek olarak verilebilir?",a:["A) Word","B) Makine dili","C) OS","D) Dil"],c:0},
+{q:"29) Yazılım değil?",a:["A) OS","B) Uygulama","C) Dil","D) LAN"],c:3},
+{q:"30) I. Klavye,II. Fare,III. Yazıcı,IV. Tarayıcı-hangileri giriş birimidir?",a:["A) I,II","B) I,II,III","C) I,II,IV","D) I,IV"],c:2},
+{q:"31) Çıkış birimi?",a:["A) Joystick","B) Klavye","C) Yazıcı","D) Optik"],c:2},
+{q:"32) İşlemci nedir?",a:["A) Tüm işlemler","B) İletişim","C) RAM","D) Program"],c:0},
+{q:"33) Tarayıcı?",a:["A) Yazdırır","B) Kağıttan PC","C) İnternette arama","D) Dosya"],c:1},
+{q:"34) Açık kaynak OS?",a:["A) Windows","B) Mac","C) IOS","D) Linux"],c:3},
+{q:"35) OS özelliği değil?",a:["A) PC kapalıyken çalışır","B) İletişim","C) Donanım yönetimi","D) Fizik hazırlık"],c:0},
+{q:"36) Yazılım çeşidi değil?",a:["A) OS","B) Uygulama","C) Arda Ayaydın(ben)","D) Programlama"],c:2},
+{q:"37) Linux işletim sistemi ile ilgili verilen özelliklerden hangisi yanlıştır?",a:["A) Ücretli","B) Penguen","C) Açık kaynak","D) Unix benzeri"],c:0},
+{q:"38) Yanlış ifade?",a:["A) Yazılım, donanımla kullanıcı arasında iletişim kuran, donanımı kontrol eden programlardır.","B) RAM, bilgilerin geçici olarak tutulduğu, üzerinde o an çalışan programların bilgilerini tutan bellektir.","C) Optik okuyucu bir giriş birimidir.","D) Byte, bilgisayarda kullanılan kapasite ölçü birimlerinin en küçüğüdür."],c:3},
+{q:"39) Programlama dili değil?",a:["A) Pascal","B) Cobol","C) Windows 11","D) Delphi"],c:2},
+{q:"40)RAM ve ROM ile ilgili olarak aşağıdaki ifadelerden hangisi doğrudur?",a:["A) RAM kalıcı","B) ROM değişir","C) ROM değişmez","D) RAM silinmez"],c:2},
+{q:"41) Bilgisayar türü değil?",a:["A) Ana","B) Mini","C) Bilimsel","D) Ağ"],c:2},
+{q:"42) Temel donanım değil?",a:["A) Kasa","B) Klavye","C) Fare","D) Yazıcı"],c:3},
+{q:"43) Linux işletim sistemiyle ilgili aşağıdakilerden hangisi doğrudur?",a:["A) Apple","B) Mobil","C) Ücretsiz","D) Tübitak"],c:2},
+{q:"44) Çıkış değil?",a:["A) Ekran","B) Kulaklık","C) Projeksiyon","D) Mikrofon"],c:3},
+{q:"45) Geçici bellek?",a:["A) CD","B) RAM","C) ROM","D) HDD"],c:1},
+{q:"46) Aşağıdakilerden hangisi işletim sisteminin görevlerinden değildir?",a:["A) Bellek","B) Dosya","C) Giriş/Çıkış","D) İnternet"],c:3},
+{q:"47) Masaüstü yayıncılık?",a:["A) Publisher","B) OneNote","C) InfoPath","D) Outlook"],c:0},
+{q:"48) E-posta + takvim?",a:["A) Publisher","B) OneNote","C) InfoPath","D) Outlook"],c:3},
+{q:"49) Sanal not defteri?",a:["A) Publisher","B) OneNote","C) InfoPath","D) Outlook"],c:1},
+{q:"50) Simge?",a:["A) Yönlendirme","B) Kenar boşlukları","C) Boyut","D) Sütunlar"],c:1},
+{q:"51) Simge?",a:["A) Sırala","B) Satır aralığı","C) Gölge","D) Tümünü göster"],c:3},
+{q:"52) Yeni belge?",a:["A) Dosya>Yeni Belge","B) Giriş>Yeni","C) Dosya>Boş","D) Dosya>Yeni>Boş"],c:3},
+{q:"53) Pencereye cetvel ekleyen komutun bulunduğu menü aşağıdakilerden hangisidir?",a:["A) Pencere","B) Görünüm","C) Düzen","D) Dosya"],c:1},
+{q:"54) Word nedir?",a:["A) Hesap","B) Grafik","C) Kelime işlemci","D) OS"],c:2},
+{q:"55) Doğru karşılaştırma?",a:["A) Şekil","B) Resim","C) Köprü","D) Tablo"],c:3},
+{q:"56) Bölüm?",a:["A) Paragraf","B) Pano","C) Yazı tipi","D) Düzenleme"],c:2},
+{q:"57) Bölüm?",a:["A) Paragraf","B) Çizimler","C) Yazı tipi","D) Düzenleme"],c:1},
+{q:"58) Bölüm?",a:["A) Paragraf","B) Çizimler","C) Yazı tipi","D) Düzenleme"],c:0},
+{q:"59) Buton?",a:["A) Aç","B) Kaydet","C) Yeni","D) Yazdır"],c:1},
+{q:"60) Ctrl+Z?",a:["A) Geri al","B) Yeniden","C) Yeni","D) Kaydet"],c:0},
+{q:"61) Tümünü seç?",a:["A) Ctrl+S","B) Ctrl+V","C) Shift+A","D) Ctrl+A"],c:3},
+{q:"62) Simge?",a:["A) Yazı","B) Çizim","C) Tablo","D) Kenarlık"],c:2},
+{q:"63) Word uzantı?",a:["A) png","B) doc","C) ppt","D) pdf"],c:1},
+{q:"64) Excel uzantı?",a:["A) xlsx","B) png","C) ppt","D) pdf"],c:0},
+{q:"65) ppt açmak?",a:["A) Word","B) Excel","C) Publisher","D) PowerPoint"],c:3},
+{q:"66) Sıkıştırma?",a:["A) png","B) pdf","C) rar","D) ppt"],c:2},
+{q:"67) Bilgisayar donanımının temel yapısı aşağıdakilerden hangisinde doğru olarak verilmiştir?",a:["A) Giriş-CPU-Çıkış","B) Giriş-Hesap-Çıkış","C) Kullanıcı-CPU","D) Kullanıcı-OS"],c:0},
+{q:"68) Hesap makinesi, Not defteri ve Paint programları nereden çalıştırılır?",a:["A) Başlat>Tüm Prog>Donatılar","B) Başlat>Donatılar","C) Denetim","D) Bilgisayarım"],c:0},
+{q:"69) Bilgisayara yeni bir kullanıcı hesabı nereden oluşturulur?",a:["A) Denetim>Kullanıcı","B) Denetim>Kullanıcılar","C) Denetim>Konuşma","D) Denetim>Hesap"],c:0},
+{q:"70) Görev çubuğunda yok?",a:["A) Başlat","B) Açık program","C) Denetim simgeleri","D) Saat"],c:2},
+{q:"71) İnternet?",a:["A) Haberleşme ağı","B) Program","C) Müzik","D) Arama"],c:0},
+{q:"72) artuklu.edu.tr?",a:["A) Ticari","B) Devlet","C) Eğitim","D) com olmalı"],c:2},
+{q:"73) Haberleşme protokol?",a:["A) FTP","B) TCP/IP","C) TTP","D) WWW"],c:1},
+{q:"74) Dosya transfer?",a:["A) FTP","B) CTP","C) MMS","D) WWW"],c:0},
+{q:"75) Wireless haberleşme neyi ifade eder?",a:["A) Kablolu haberleşme","B) Yüksek hızda haberleşme","C) Kablosuz haberleşme","D) Düşük hızda haberleşme"],c:2},
+{q:"76) Aşağıdakilerden hangisi IP adresi olamaz?",a:["A) 192.168.1.1","B) 195.125.1.34","C) 1951.156.0.1","D) 192.111.11.1"],c:2},
+{q:"77) Yakın mesafe bilgisayar haberleşme kartı?",a:["A) Ağ","B) ADSL","C) Kablo","D) Modem"],c:0},
+{q:"78) WWW belgelerini görüntüleyen program?",a:["A) İnternet","B) URL","C) Tarayıcı","D) HTML editörü"],c:2},
+{q:"79) Antivirüs için yanlış?",a:["A) İnternete karşı korur","B) Bilgisayar kapalıyken çalışır","C) Hepsini silemeyebilir","D) Güncel olmalı"],c:1},
+{q:"80) Bilgi sızdıran yazılım?",a:["A) Spam","B) Spyware","C) Truva","D) Virüs"],c:2}
+];
 
-    <!-- 3 -->
-    <div class="card" data-correct="b" data-correct-text="Ham değerler (veri) ve işlenmiş bilgi (bilgi)">
-      <div class="q-left">3</div>
-      <div class="q-body">
-        <div class="qtext">Hangisi "veri" ile "bilgi" arasındaki doğru tanımı verir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q3" value="a"> a) Veri işlenmiş bilgidir</label></li>
-          <li><label><input type="radio" name="q3" value="b"> b) Veri ham değer, bilgi işlenmiş veridir</label></li>
-          <li><label><input type="radio" name="q3" value="c"> c) Bilgi ham değerdir</label></li>
-          <li><label><input type="radio" name="q3" value="d"> d) Veri ve bilgi aynı şeydir</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
+let correctCount = 0;
+let answered = 0;
 
-    <!-- 4 -->
-    <div class="card" data-correct="d" data-correct-text="Girdi, işleme, saklama, çıktı">
-      <div class="q-left">4</div>
-      <div class="q-body">
-        <div class="qtext">Bilgisayarların temel işlevleri nelerdir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q4" value="a"> a) Sadece çıktı verirler</label></li>
-          <li><label><input type="radio" name="q4" value="b"> b) Sadece girdi alırlar</label></li>
-          <li><label><input type="radio" name="q4" value="c"> c) Sadece saklama yaparlar</label></li>
-          <li><label><input type="radio" name="q4" value="d"> d) Girdi alır, işler, saklar, çıktı verir</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
+const testDiv = document.getElementById("test");
 
-    <!-- 5 -->
-    <div class="card" data-correct="a" data-correct-text="Mikro, mini, mainframe, süper bilgisayar">
-      <div class="q-left">5</div>
-      <div class="q-body">
-        <div class="qtext">Bilgisayarların sınıflandırmasında aşağıdakilerden hangisi yer alır?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q5" value="a"> a) Mikro, mini, mainframe, süper bilgisayar</label></li>
-          <li><label><input type="radio" name="q5" value="b"> b) Sadece mobil ve masaüstü</label></li>
-          <li><label><input type="radio" name="q5" value="c"> c) Sadece dizüstü ve tablet</label></li>
-          <li><label><input type="radio" name="q5" value="d"> d) Sadece IBM türleri</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
+questions.forEach((q,i)=>{
+  const div=document.createElement("div");
+  div.className="question";
+  div.innerHTML="<p><b>"+q.q+"</b></p>";
+  q.a.forEach((opt,idx)=>{
+    const btn=document.createElement("button");
+    btn.textContent=opt;
+    btn.onclick=()=>check(div,idx,q.c);
+    div.appendChild(btn);
+  });
+  const res=document.createElement("div");
+  res.className="result";
+  div.appendChild(res);
+  testDiv.appendChild(div);
+});
 
-    <!-- 6 -->
-    <div class="card" data-correct="b" data-correct-text="Dişli ve mekanik parçalardan oluşur">
-      <div class="q-left">6</div>
-      <div class="q-body">
-        <div class="qtext">Mekanik bilgisayarlar neye dayanır?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q6" value="a"> a) Tamamen yazılıma</label></li>
-          <li><label><input type="radio" name="q6" value="b"> b) Dişli ve mekanik parçalara</label></li>
-          <li><label><input type="radio" name="q6" value="c"> c) Bulut tabanlı servislere</label></li>
-          <li><label><input type="radio" name="q6" value="d"> d) Optik sensörlere</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
+function check(div,sel,correct){
+  const r=div.querySelector(".result");
+  if(r.textContent!=="") return;
 
-    <!-- 7 -->
-    <div class="card" data-correct="c" data-correct-text="Hem mekanik hem elektrikli parçalar içerir">
-      <div class="q-left">7</div>
-      <div class="q-body">
-        <div class="qtext">Elektromekanik bilgisayarların özelliği nedir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q7" value="a"> a) Sadece vakum tüpleri içerir</label></li>
-          <li><label><input type="radio" name="q7" value="b"> b) Sadece mekanik değil, tamamen elektronik</label></li>
-          <li><label><input type="radio" name="q7" value="c"> c) Hem mekanik hem elektrikli parçalar içerir</label></li>
-          <li><label><input type="radio" name="q7" value="d"> d) Yazılımla çalışmaz</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
+  answered++;
 
-    <!-- 8 -->
-    <div class="card" data-correct="a" data-correct-text="Tamamen elektronik devrelerle çalışır">
-      <div class="q-left">8</div>
-      <div class="q-body">
-        <div class="qtext">Elektronik bilgisayarların çalışma prensibi nasıldır?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q8" value="a"> a) Tamamen elektronik devrelerle çalışır</label></li>
-          <li><label><input type="radio" name="q8" value="b"> b) Sadece mekanik parçalar kullanır</label></li>
-          <li><label><input type="radio" name="q8" value="c"> c) Sadece elektromekanik yapıdadır</label></li>
-          <li><label><input type="radio" name="q8" value="d"> d) Optik disklerle çalışır</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
+  if(sel===correct){
+    r.textContent="Doğru ✅";
+    r.className="result correct";
+    correctCount++;
+  }else{
+    r.textContent="Yanlış ❌ , Doğru cevap: "+["A","B","C","D"][correct];
+    r.className="result wrong";
+  }
 
-    <!-- 9 -->
-    <div class="card" data-correct="b" data-correct-text="1: vakum tüpleri, 2: transistör, 3: entegre devre, 4: mikroişlemci, 5: yapay zeka dönemi">
-      <div class="q-left">9</div>
-      <div class="q-body">
-        <div class="qtext">Bilgisayar kuşakları sıralaması hangisinde doğru verilmiştir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q9" value="a"> a) 1: transistör, 2: vakum tüpü, 3: mikroişlemci</label></li>
-          <li><label><input type="radio" name="q9" value="b"> b) 1: vakum tüpleri, 2: transistör, 3: entegre devre, 4: mikroişlemci, 5: yapay zeka</label></li>
-          <li><label><input type="radio" name="q9" value="c"> c) Kuşak diye bir kavram yoktur</label></li>
-          <li><label><input type="radio" name="q9" value="d"> d) 1: mikroişlemci, 2: entegre devre, 3: vakum tüpü</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
+  if(answered===80){
+    document.getElementById("finish").style.display="block";
+    document.getElementById("finish").innerHTML=
+      "Test Bitti 🎯<br>Doğru Sayısı: <b>"+correctCount+
+      "</b> / 80<br>Yanlış Sayısı: <b>"+(80-correctCount)+"</b>";
+    window.scrollTo(0,document.body.scrollHeight);
+  }
+}
+</script>
 
-    <!-- 10 -->
-    <div class="card" data-correct="a" data-correct-text="CPU, RAM, Disk, Anakart, Ekran kartı">
-      <div class="q-left">10</div>
-      <div class="q-body">
-        <div class="qtext">Aşağıdakilerden hangisi temel bilgisayar parçalarından değildir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q10" value="a"> a) CPU, RAM, Disk, Anakart, Ekran kartı (hepsi temel parçadır)</label></li>
-          <li><label><input type="radio" name="q10" value="b"> b) CPU</label></li>
-          <li><label><input type="radio" name="q10" value="c"> c) RAM</label></li>
-          <li><label><input type="radio" name="q10" value="d"> d) Ekran kartı</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 11 -->
-    <div class="card" data-correct="c" data-correct-text="Giriş, işlem, bellek, çıkış birimleri">
-      <div class="q-left">11</div>
-      <div class="q-body">
-        <div class="qtext">Bir bilgisayarın ana birimleri hangileridir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q11" value="a"> a) Sadece CPU ve RAM</label></li>
-          <li><label><input type="radio" name="q11" value="b"> b) Sadece giriş birimleri</label></li>
-          <li><label><input type="radio" name="q11" value="c"> c) Giriş, işlem, bellek, çıkış birimleri</label></li>
-          <li><label><input type="radio" name="q11" value="d"> d) Sadece işletim sistemi</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 12 -->
-    <div class="card" data-correct="a" data-correct-text="Klavye, fare, tarayıcı">
-      <div class="q-left">12</div>
-      <div class="q-body">
-        <div class="qtext">Aşağıdakilerden hangisi giriş birimidir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q12" value="a"> a) Klavye, fare, tarayıcı</label></li>
-          <li><label><input type="radio" name="q12" value="b"> b) Monitör</label></li>
-          <li><label><input type="radio" name="q12" value="c"> c) Yazıcı</label></li>
-          <li><label><input type="radio" name="q12" value="d"> d) Hoparlör</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 13 -->
-    <div class="card" data-correct="d" data-correct-text="ALU, kontrol birimi, yazmaçlar">
-      <div class="q-left">13</div>
-      <div class="q-body">
-        <div class="qtext">CPU'nun temel bileşenleri nelerdir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q13" value="a"> a) Sadece hard disk</label></li>
-          <li><label><input type="radio" name="q13" value="b"> b) Monitör ve klavye</label></li>
-          <li><label><input type="radio" name="q13" value="c"> c) Sadece yazmaçlar</label></li>
-          <li><label><input type="radio" name="q13" value="d"> d) ALU, kontrol birimi, yazmaçlar</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 14 -->
-    <div class="card" data-correct="b" data-correct-text="RAM, ROM, Cache">
-      <div class="q-left">14</div>
-      <div class="q-body">
-        <div class="qtext">Bellek birimi tipik olarak hangi öğeleri içerir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q14" value="a"> a) Sadece hard disk</label></li>
-          <li><label><input type="radio" name="q14" value="b"> b) RAM, ROM, Cache</label></li>
-          <li><label><input type="radio" name="q14" value="c"> c) Sadece yazıcı</label></li>
-          <li><label><input type="radio" name="q14" value="d"> d) Sadece ekran kartı</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 15 -->
-    <div class="card" data-correct="c" data-correct-text="Monitör, yazıcı, hoparlör">
-      <div class="q-left">15</div>
-      <div class="q-body">
-        <div class="qtext">Aşağıdakilerden hangisi çıkış birimidir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q15" value="a"> a) Klavye</label></li>
-          <li><label><input type="radio" name="q15" value="b"> b) Fare</label></li>
-          <li><label><input type="radio" name="q15" value="c"> c) Monitör, yazıcı, hoparlör</label></li>
-          <li><label><input type="radio" name="q15" value="d"> d) Tarayıcı</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 16 -->
-    <div class="card" data-correct="a" data-correct-text="Donanımı yöneten yazılımdır">
-      <div class="q-left">16</div>
-      <div class="q-body">
-        <div class="qtext">İşletim sistemi nedir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q16" value="a"> a) Donanımı yöneten yazılımdır</label></li>
-          <li><label><input type="radio" name="q16" value="b"> b) Sadece bir oyun</label></li>
-          <li><label><input type="radio" name="q16" value="c"> c) Donanım parçasıdır</label></li>
-          <li><label><input type="radio" name="q16" value="d"> d) Ekran çözünürlüğü</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 17 -->
-    <div class="card" data-correct="b" data-correct-text="Arayüz, shell, kernel, donanım">
-      <div class="q-left">17</div>
-      <div class="q-body">
-        <div class="qtext">İşletim sistemi katmanları aşağıdakilerden hangisinde doğru sıralanmıştır?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q17" value="a"> a) Donanım, kernel, shell, arayüz</label></li>
-          <li><label><input type="radio" name="q17" value="b"> b) Arayüz, shell, kernel, donanım</label></li>
-          <li><label><input type="radio" name="q17" value="c"> c) Kernel, arayüz, shell, donanım</label></li>
-          <li><label><input type="radio" name="q17" value="d"> d) Sadece arayüz ve kernel</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 18 -->
-    <div class="card" data-correct="a" data-correct-text="Donanımı yöneten çekirdek yapısıdır">
-      <div class="q-left">18</div>
-      <div class="q-body">
-        <div class="qtext">Kernel nedir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q18" value="a"> a) Donanımı yöneten çekirdek yapıdır</label></li>
-          <li><label><input type="radio" name="q18" value="b"> b) Kullanıcı arayüzü</label></li>
-          <li><label><input type="radio" name="q18" value="c"> c) Sadece dosya yöneticisi</label></li>
-          <li><label><input type="radio" name="q18" value="d"> d) Yazıcı sürücüsü</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 19 -->
-    <div class="card" data-correct="d" data-correct-text="Kullanıcının komut verdiği katmandır (shell)">
-      <div class="q-left">19</div>
-      <div class="q-body">
-        <div class="qtext">Shell nedir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q19" value="a"> a) Donanım bileşeni</label></li>
-          <li><label><input type="radio" name="q19" value="b"> b) Veri tabanı</label></li>
-          <li><label><input type="radio" name="q19" value="c"> c) Bellek tipi</label></li>
-          <li><label><input type="radio" name="q19" value="d"> d) Kullanıcının komut verdiği katmandır</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 20 -->
-    <div class="card" data-correct="b" data-correct-text="Çalışan programdır (process)">
-      <div class="q-left">20</div>
-      <div class="q-body">
-        <div class="qtext">Proses (process) terimi neyi ifade eder?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q20" value="a"> a) Sabit disk türü</label></li>
-          <li><label><input type="radio" name="q20" value="b"> b) Çalışan programdır</label></li>
-          <li><label><input type="radio" name="q20" value="c"> c) Sadece kernel fonksiyonu</label></li>
-          <li><label><input type="radio" name="q20" value="d"> d) Kullanıcı hesabı</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 21 -->
-    <div class="card" data-correct="a" data-correct-text="Dosya: veri, Dizin: klasör yapısı">
-      <div class="q-left">21</div>
-      <div class="q-body">
-        <div class="qtext">Dosya ve dizin kavramları için doğru eşleştirme hangisidir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q21" value="a"> a) Dosya: veri; Dizin: klasör yapısı</label></li>
-          <li><label><input type="radio" name="q21" value="b"> b) Dosya klasör, dizin veri</label></li>
-          <li><label><input type="radio" name="q21" value="c"> c) İkisi de aynı şeydir</label></li>
-          <li><label><input type="radio" name="q21" value="d"> d) Dizin sadece sistem dosyasıdır</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 22 -->
-    <div class="card" data-correct="a" data-correct-text="1970'lerde geliştirilen işletim sistemi (Unix)">
-      <div class="q-left">22</div>
-      <div class="q-body">
-        <div class="qtext">Unix hangi dönemde geliştirilmiştir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q22" value="a"> a) 1970'lerde</label></li>
-          <li><label><input type="radio" name="q22" value="b"> b) 1990'larda</label></li>
-          <li><label><input type="radio" name="q22" value="c"> c) 1950'lerde</label></li>
-          <li><label><input type="radio" name="q22" value="d"> d) 2000'lerde</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 23 -->
-    <div class="card" data-correct="b" data-correct-text="BSD: Berkeley tarafından geliştirilen Unix sürümü">
-      <div class="q-left">23</div>
-      <div class="q-body">
-        <div class="qtext">Unix BSD hangi kurum tarafından geliştirildi?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q23" value="a"> a) AT&T</label></li>
-          <li><label><input type="radio" name="q23" value="b"> b) Berkeley</label></li>
-          <li><label><input type="radio" name="q23" value="c"> c) Microsoft</label></li>
-          <li><label><input type="radio" name="q23" value="d"> d) IBM</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 24 -->
-    <div class="card" data-correct="c" data-correct-text="Unix System V: AT&T tarafından geliştirildi">
-      <div class="q-left">24</div>
-      <div class="q-body">
-        <div class="qtext">Unix System V kimin tarafından geliştirilmiştir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q24" value="a"> a) Berkeley</label></li>
-          <li><label><input type="radio" name="q24" value="b"> b) Apple</label></li>
-          <li><label><input type="radio" name="q24" value="c"> c) AT&T</label></li>
-          <li><label><input type="radio" name="q24" value="d"> d) Google</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 25 -->
-    <div class="card" data-correct="d" data-correct-text="macOS ve iOS gibi sistemlerde Unix etkisi görülür">
-      <div class="q-left">25</div>
-      <div class="q-body">
-        <div class="qtext">Günümüzde Unix etkisi hangi işletim sistemlerinde görülür?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q25" value="a"> a) Sadece Windows</label></li>
-          <li><label><input type="radio" name="q25" value="b"> b) Sadece Android</label></li>
-          <li><label><input type="radio" name="q25" value="c"> c) Sadece FreeDOS</label></li>
-          <li><label><input type="radio" name="q25" value="d"> d) macOS, iOS gibi sistemlerde görülür</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 26 -->
-    <div class="card" data-correct="b" data-correct-text="DOS komut satırı tabanlı işletim sistemidir">
-      <div class="q-left">26</div>
-      <div class="q-body">
-        <div class="qtext">DOS hakkında doğru ifade hangisidir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q26" value="a"> a) Grafiksel arayüze sahiptir</label></li>
-          <li><label><input type="radio" name="q26" value="b"> b) Komut satırı tabanlı işletim sistemidir</label></li>
-          <li><label><input type="radio" name="q26" value="c"> c) Sadece mobil cihazlar içindir</label></li>
-          <li><label><input type="radio" name="q26" value="d"> d) İnternetsiz çalışmaz</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 27 -->
-    <div class="card" data-correct="a" data-correct-text="FreeDOS ücretsiz DOS sürümüdür">
-      <div class="q-left">27</div>
-      <div class="q-body">
-        <div class="qtext">FreeDOS nedir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q27" value="a"> a) Ücretsiz DOS sürümüdür</label></li>
-          <li><label><input type="radio" name="q27" value="b"> b) Windows'un yeni adı</label></li>
-          <li><label><input type="radio" name="q27" value="c"> c) Bir donanım parçası</label></li>
-          <li><label><input type="radio" name="q27" value="d"> d) MacOS sürümü</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 28 -->
-    <div class="card" data-correct="d" data-correct-text="Windows popüler bir işletim sistemidir">
-      <div class="q-left">28</div>
-      <div class="q-body">
-        <div class="qtext">Windows için aşağıdakilerden hangisi doğrudur?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q28" value="a"> a) Windows yalnızca sunucularda çalışır</label></li>
-          <li><label><input type="radio" name="q28" value="b"> b) Windows açık kaynaklıdır</label></li>
-          <li><label><input type="radio" name="q28" value="c"> c) Windows bir donanım parçasıdır</label></li>
-          <li><label><input type="radio" name="q28" value="d"> d) Windows popüler bir işletim sistemidir</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 29 -->
-    <div class="card" data-correct="a" data-correct-text="95, 98, XP, 7, 8, 10, 11">
-      <div class="q-left">29</div>
-      <div class="q-body">
-        <div class="qtext">Windows sürümlerinden bazıları aşağıdakilerden hangisinde doğru verilmiştir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q29" value="a"> a) 95, 98, XP, 7, 8, 10, 11</label></li>
-          <li><label><input type="radio" name="q29" value="b"> b) Sadece Windows 3.1 mevcuttur</label></li>
-          <li><label><input type="radio" name="q29" value="c"> c) Windows sürümü yoktur</label></li>
-          <li><label><input type="radio" name="q29" value="d"> d) Windows 2000 tek sürümdür</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 30 -->
-    <div class="card" data-correct="b" data-correct-text="Windows NT aile modern Windows sürümlerinin temelidir">
-      <div class="q-left">30</div>
-      <div class="q-body">
-        <div class="qtext">Windows NT ailesine ilişkin doğru ifade hangisidir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q30" value="a"> a) Windows NT sadece cep telefonları için</label></li>
-          <li><label><input type="radio" name="q30" value="b"> b) Modern Windows sürümlerinin temelidir</label></li>
-          <li><label><input type="radio" name="q30" value="c"> c) Açık kaynaklı bir çekirdektir</label></li>
-          <li><label><input type="radio" name="q30" value="d"> d) Linux dağıtımıdır</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 31 -->
-    <div class="card" data-correct="a" data-correct-text="Linux açık kaynaklı bir çekirdektir">
-      <div class="q-left">31</div>
-      <div class="q-body">
-        <div class="qtext">Linux nedir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q31" value="a"> a) Açık kaynak çekirdektir</label></li>
-          <li><label><input type="radio" name="q31" value="b"> b) Microsoft'un bir ürünü</label></li>
-          <li><label><input type="radio" name="q31" value="c"> c) Sadece bir uygulama</label></li>
-          <li><label><input type="radio" name="q31" value="d"> d) Donanım parçası</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 32 -->
-    <div class="card" data-correct="a" data-correct-text="Özgür yazılım: kaynak kodu açık olan yazılımdır">
-      <div class="q-left">32</div>
-      <div class="q-body">
-        <div class="qtext">Özgür yazılım ne demektir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q32" value="a"> a) Kaynak kodu açık olan yazılımdır</label></li>
-          <li><label><input type="radio" name="q32" value="b"> b) Ticari lisanslı yazılımdır</label></li>
-          <li><label><input type="radio" name="q32" value="c"> c) Sadece mobil uygulamalar</label></li>
-          <li><label><input type="radio" name="q32" value="d"> d) Donanım üretim standardı</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 33 -->
-    <div class="card" data-correct="d" data-correct-text="Ubuntu, Debian, Fedora, Mint örnek Linux dağıtımlarıdır">
-      <div class="q-left">33</div>
-      <div class="q-body">
-        <div class="qtext">Aşağıdakilerden hangileri birer Linux dağıtımıdır?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q33" value="a"> a) Windows, macOS</label></li>
-          <li><label><input type="radio" name="q33" value="b"> b) Android, iOS</label></li>
-          <li><label><input type="radio" name="q33" value="c"> c) DOS, FreeDOS</label></li>
-          <li><label><input type="radio" name="q33" value="d"> d) Ubuntu, Debian, Fedora, Mint</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 34 -->
-    <div class="card" data-correct="b" data-correct-text="Windows 7 2009'da çıktı (not: özette 2010 yazılmış, genelde 2009 olarak bilinir) ">
-      <div class="q-left">34</div>
-      <div class="q-body">
-        <div class="qtext">Özetinizde Windows 7 hangi yılda olduğu belirtilmiştir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q34" value="a"> a) 2005</label></li>
-          <li><label><input type="radio" name="q34" value="b"> b) 2010 (özetinizde bu şekilde belirtildi)</label></li>
-          <li><label><input type="radio" name="q34" value="c"> c) 1999</label></li>
-          <li><label><input type="radio" name="q34" value="d"> d) 2020</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 35 -->
-    <div class="card" data-correct="a" data-correct-text="HD, Full HD, 2K, 4K">
-      <div class="q-left">35</div>
-      <div class="q-body">
-        <div class="qtext">Aşağıdakilerden hangisi ekran çözünürlükleri arasında yer alır?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q35" value="a"> a) HD, Full HD, 2K, 4K</label></li>
-          <li><label><input type="radio" name="q35" value="b"> b) Mbps, Kbps</label></li>
-          <li><label><input type="radio" name="q35" value="c"> c) GHz, MHz</label></li>
-          <li><label><input type="radio" name="q35" value="d"> d) Watt</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 36 -->
-    <div class="card" data-correct="c" data-correct-text="CPU işlem yapar, RAM geçici veriyi tutar, Disk kalıcı depolama sağlar">
-      <div class="q-left">36</div>
-      <div class="q-body">
-        <div class="qtext">Aşağıdaki üçlü eşlemeden hangisi doğrudur?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q36" value="a"> a) RAM işlemci, CPU depolama, Disk kontrol birimi</label></li>
-          <li><label><input type="radio" name="q36" value="b"> b) Disk işlemci, CPU ekran kartı, RAM hoparlör</label></li>
-          <li><label><input type="radio" name="q36" value="c"> c) CPU işlem yapar; RAM geçici veri; Disk kalıcı depolama</label></li>
-          <li><label><input type="radio" name="q36" value="d"> d) Hepsi yanlış</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 37 -->
-    <div class="card" data-correct="b" data-correct-text="Shell kullanıcı ile kernel arasında komutları alan katmandır">
-      <div class="q-left">37</div>
-      <div class="q-body">
-        <div class="qtext">Shell'in görevi nedir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q37" value="a"> a) Donanımı doğrudan kontrol etmek</label></li>
-          <li><label><input type="radio" name="q37" value="b"> b) Kullanıcı ile kernel arasında komutları almak/vermek</label></li>
-          <li><label><input type="radio" name="q37" value="c"> c) Sabit disk formatlamak</label></li>
-          <li><label><input type="radio" name="q37" value="d"> d) Grafik sürücüsü</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 38 -->
-    <div class="card" data-correct="a" data-correct-text="İşletim sistemi donanım ve yazılım kaynaklarını yönetir">
-      <div class="q-left">38</div>
-      <div class="q-body">
-        <div class="qtext">İşletim sisteminin temel görevi nedir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q38" value="a"> a) Donanım ve yazılım kaynaklarını yönetmek</label></li>
-          <li><label><input type="radio" name="q38" value="b"> b) Sadece internet sağlar</label></li>
-          <li><label><input type="radio" name="q38" value="c"> c) Sadece oyun çalıştırır</label></li>
-          <li><label><input type="radio" name="q38" value="d"> d) Yazıcı değil</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 39 -->
-    <div class="card" data-correct="c" data-correct-text="Entegre devre 3. kuşaktır">
-      <div class="q-left">39</div>
-      <div class="q-body">
-        <div class="qtext">Entegre devrelerin bilgisayar kuşağı hangisidir?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q39" value="a"> a) 1. kuşak</label></li>
-          <li><label><input type="radio" name="q39" value="b"> b) 2. kuşak</label></li>
-          <li><label><input type="radio" name="q39" value="c"> c) 3. kuşak</label></li>
-          <li><label><input type="radio" name="q39" value="d"> d) 5. kuşak</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- 40 -->
-    <div class="card" data-correct="b" data-correct-text="Yapay zeka dönemi 5. kuşaktır">
-      <div class="q-left">40</div>
-      <div class="q-body">
-        <div class="qtext">Bilgisayar kuşaklarında "yapay zeka dönemi" genellikle hangi kuşak olarak adlandırılır?</div>
-        <ul class="options">
-          <li><label><input type="radio" name="q40" value="a"> a) 2. kuşak</label></li>
-          <li><label><input type="radio" name="q40" value="b"> b) 5. kuşak</label></li>
-          <li><label><input type="radio" name="q40" value="c"> c) 1. kuşak</label></li>
-          <li><label><input type="radio" name="q40" value="d"> d) 3. kuşak</label></li>
-        </ul>
-        <div class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- Bitiş -->
-    <div style="text-align:center; margin:18px 0 40px 0;">
-      <button id="reset" type="button">Tümünü Temizle / Yeniden Başlat</button>
-    </div>
-
-    <footer>
-      Hazırlayan: ChatGPT — Bilgisayar Temelleri kısa özetine göre hazırlanmıştır.
-    </footer>
-  </div>
-
-  <script>
-    // Tüm sorulara event listener ekle
-    document.querySelectorAll('.card').forEach(function(card){
-      var correctValue = card.getAttribute('data-correct');
-      var correctText = card.getAttribute('data-correct-text') || '';
-      var feedbackEl = card.querySelector('.feedback');
-
-      // her radio için change dinle
-      card.querySelectorAll('input[type="radio"]').forEach(function(radio){
-        radio.addEventListener('change', function(){
-          if(!this.checked) return;
-          var selected = this.value;
-          if(selected === correctValue){
-            feedbackEl.innerHTML = '<span class="correct">Doğru!</span>';
-          } else {
-            // Doğru cevabın metnini göster. Eğer card data-correct-text yoksa, doğru radio'nun label'ını bul.
-            var correctTextToShow = correctText;
-            if(!correctTextToShow){
-              var name = card.querySelector('input[type="radio"]').name;
-              var correctInput = card.querySelector('input[name="'+name+'"][value="'+correctValue+'"]');
-              if(correctInput){
-                // label metnini bul
-                var lab = correctInput.closest('label');
-                if(lab) correctTextToShow = lab.textContent.trim();
-              }
-            }
-            feedbackEl.innerHTML = '<span class="wrong">Yanlış — Doğru cevap: '+ (correctTextToShow || correctValue) +'</span>';
-          }
-        });
-      });
-    });
-
-    // Reset butonu: tüm seçimleri temizle ve geri bildirimleri sıfırla
-    document.getElementById('reset').addEventListener('click', function(){
-      document.querySelectorAll('.card').forEach(function(card){
-        card.querySelectorAll('input[type="radio"]').forEach(function(r){
-          r.checked = false;
-        });
-        var fb = card.querySelector('.feedback');
-        if(fb) fb.textContent = '';
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  </script>
 </body>
 </html>
